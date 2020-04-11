@@ -10,4 +10,7 @@ size = (width, height)
 screen = pygame.display.set_mode(size)
 
 # 창 유지하기
+pygame.draw.rect(screen, (200, 200, 200), (10, 10, 500, 50), 2)
+pygame.display.flip()
+
 time.sleep(2)
