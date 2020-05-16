@@ -96,7 +96,7 @@ def main():
         pygame.display.update()
 
     while run:
-        clock.tick(60)
+        clock.tick(FPS)
         redraw_window()
 
         if len(enemies) == 0:
