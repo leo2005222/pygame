@@ -33,17 +33,73 @@ RED_SPACE_SHIP = pygame.image.load(os.path.join('assets', 'pixel_ship_red_small.
 BLUE_SPACE_SHIP = pygame.image.load(os.path.join('assets', 'pixel_ship_blue_small.png'))
 GREEN_SPACE_SHIP = pygame.image.load(os.path.join('assets', 'pixel_ship_green_small.png'))
 
+# 레이저 불러오기
+YELLOW_LASER = pygame.image.load(os.path.join('assets', 'pixel_laser_yellow.png'))
+RED_LASER = pygame.image.load(os.path.join('assets', 'pixel_laser_red.png'))
+BLUE_LASER = pygame.image.load(os.path.join('assets', 'pixel_laser_blue.png'))
+GREEN_LASER = pygame.image.load(os.path.join('assets', 'pixel_laser_green.png'))
+
+
+class Laser:
+    def __init__(self, x, y, img):
+        self.x = x
+        self.y = y
+        self.img = img
+        self.mask = pygame.mask.from_surface(self.img)
+
+    def draw(self, window):
+        window.blit(self.img, (self.x, self.y))
+
+    def move(self, vel):
+        self.y += vel
+
+    def off_screen(self, height):
+        return not(self.y <= SCREEN_HEIGHT and self.y >= 0)
+
+    def collision(self, obj):
+        return collide(self, obj)
+
 
 # 비행선 클래스 만들기
 class Ship:
+    COOLDOWN = 15
+
     def __init__(self, x, y, health=100):
         self.x = x
         self.y = y
         self.health = health
         self.ship_img = None
+        self.laser_img = None
+        self.mask = pygame.mask.from_surface(self.ship_img)
+        self.lasers = []
+        self.cool_down_counter = 0
+
+    def cooldown(self):
+        if self.cool_down_counter >= self.COOLDOWN:
+            self.cool_down_counter = 0
+        elif self.cool_down_counter > 0:
+            self.cool_down_counter += 1
 
     def draw(self, window):
         window.blit(self.ship_img, (self.x, self.y))
+        for laser in self.lasers:
+            laser.draw(window)
+
+    def shoot(self):
+        if self.cool_down_counter == 0:
+            laser = Laser(self.x, self.y, self.laser_img)
+            self.lasers.append(laser)
+            self.cool_down_counter = 1
+
+    def move_lasers(self, vel, obj):
+        self.cooldown()
+        for laser in self.lasers:
+            laser.move(vel)
+            if laser.off_screen(SCREEN_HEIGHT):
+                self.lasers.remove(laser)
+            elif laser.collision(obj):
+                obj.health -= 10
+                self.lasers.remove(laser)
 
     def get_width(self):
         return self.ship_img.get_width()
@@ -57,22 +113,35 @@ class Player(Ship):
     def __init__(self, x, y, health=100):
         super().__init__(x, y, health)
         self.ship_img = YELLOW_SPACE_SHIP
+        self.laser_img = YELLOW_LASER
 
 
 # 적 비행선 클래스
 class Enemy(Ship):
     COLOR_MAP = {
-        'red'   : RED_SPACE_SHIP,
-        'blue'  : BLUE_SPACE_SHIP,
-        'green' : GREEN_SPACE_SHIP
+        'red'   : (RED_SPACE_SHIP, RED_LASER),
+        'blue'  : (BLUE_SPACE_SHIP, BLUE_LASER),
+        'green' : (GREEN_SPACE_SHIP, GREEN_LASER)
     }
 
     def __init__(self, x, y, color, health=100):
         super().__init__(x, y, health)
-        self.ship_img = self.COLOR_MAP[color]
+        self.ship_img, self.laser_img = self.COLOR_MAP[color]
+        self.mask = pygame.mask.from_surface(self.ship_img)
 
     def move(self, vel):
         self.y += vel
+
+    def shoot(self):
+        if self.cool_down_counter == 0:
+            laser = Laser(self.x - 15, self.y, self.laser_img)
+            self.lasers.append(laser)
+            self.cool_down_counter = 1
+
+def collide(obj1, obj2):
+    offset_x = obj2.x - obj1.x
+    offset_y = obj2.y - obj1.y
+    return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
 
 
 # 메인 함수
@@ -91,6 +160,7 @@ def main():
     wave_length = 5
     enemy_vel = 2
 
+    laser_vel = 5
     main_font = pygame.font.SysFont('comicsans', 50)
 
     # 화면 갱신 함수
@@ -132,11 +202,19 @@ def main():
             player.y -= player_vel
         if keys[pygame.K_s] and player.y + player_vel <= SCREEN_HEIGHT - player.get_height():
             player.y += player_vel
+        if keys[pygame.K_SPACE]:
+            player.shoot()
 
         for enemy in enemies:
             enemy.move(enemy_vel)
+            enemy.move_lasers(laser_vel, player)
+            if random.randrange(0, 2*FPS) == 1:
+                enemy.shoot()
+
             if enemy.y + enemy_vel > SCREEN_HEIGHT:
                 enemies.remove(enemy)
+
+        player.move_lasers(-laser_vel, enemies)
 
 
 # 게임 실행
