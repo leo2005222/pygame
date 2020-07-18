@@ -46,6 +46,12 @@ s_pos = (COL_COUNT//2, ROW_COUNT//2)
 bodies = [s_pos]
 
 
+# 그리기
+def draw_grid(g_x, g_y, color=WHITE, border = 0):
+    one_rect = (g_x * CELL_SIZE, g_y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+    pygame.draw.rect(screen, color, one_rect, border)
+
+
 # 먹이 생성 함수 add_food()
 def add_food():
     while True:
@@ -108,18 +114,15 @@ while True:
     # 격자 그리기
     for c_idx in range(COL_COUNT):
         for r_idx in range(ROW_COUNT):
-            one_rect = (c_idx*CELL_SIZE, r_idx*CELL_SIZE, CELL_SIZE, CELL_SIZE)
-            pygame.draw.rect(screen, GRAY, one_rect, 1)
+            draw_grid(c_idx, r_idx, GRAY, 1)
 
     # 먹이 그리기
     for food in foods:
-        f_rect = (food[0]*CELL_SIZE, food[1]*CELL_SIZE, CELL_SIZE, CELL_SIZE)
-        pygame.draw.rect(screen, GREEN, f_rect)
+        draw_grid(food[0], food[1], GREEN)
 
     # 뱀 그리기
     for one in bodies:
-        b_rect = (one[0]*CELL_SIZE, one[1]*CELL_SIZE, CELL_SIZE, CELL_SIZE)
-        pygame.draw.rect(screen, BLUE, b_rect)
+        draw_grid(one[0], one[1], BLUE)
 
     # 점수 출력
     score_img = score_font.render(f"SCORE:{score}", True, YELLOW)
