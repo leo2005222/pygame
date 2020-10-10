@@ -44,6 +44,29 @@ weapon_speed = 10
 # 무기 저장소
 weapons = []
 
+# 공 만들기
+ball_images = [
+    pygame.image.load(os.path.join(img_path, "balloon1.png")),
+    pygame.image.load(os.path.join(img_path, "balloon2.png")),
+    pygame.image.load(os.path.join(img_path, "balloon3.png")),
+    pygame.image.load(os.path.join(img_path, "balloon4.png"))
+]
+
+ball_speed_y = [-18, -15, -12, -9]
+
+# 초기 공 추가
+balls = []
+balls.append(
+    {
+        "pos_x": 50,
+        "pos_y": 50,
+        "img_idx": 0,
+        "to_x": 3,
+        "to_y": -6,
+        "init_spd_y": ball_speed_y[0]
+    }
+)
+
 # 게임 루프
 running = True
 while running:
