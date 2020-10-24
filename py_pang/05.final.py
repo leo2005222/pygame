@@ -135,6 +135,32 @@ while running:
             if one_ball_rect.colliderect(one_weapon_rect):
                 remove_ball_idx = idx_ball
                 remove_weapon_idx = idx_weapon
+
+                # 공 추가하기
+                if one_ball['img_idx'] < 3:
+                    one_ball_width = one_ball_rect.size[0]
+                    one_ball_height = one_ball_rect.size[1]
+                    small_ball_rect = ball_img[one_ball['img_idx']+1].get_rect().size
+                    small_ball_width = small_ball_rect[0]
+                    small_ball_height = small_ball_rect[1]
+
+                    balls.append({
+                        'pos_x': one_ball['pos_x'] + one_ball_width//2 - small_ball_width//2,
+                        'pos_y': one_ball['pos_y'] + one_ball_height//2 - small_ball_height//2,
+                        'to_x': 3,
+                        'to_y': -6,
+                        'img_idx': one_ball['img_idx']+1,
+                        'init_spd_y': ball_spd_y[one_ball['img_idx'] + 1]
+                    })
+                    balls.append({
+                        'pos_x': one_ball['pos_x'] + one_ball_width//2 - small_ball_width//2,
+                        'pos_y': one_ball['pos_y'] + one_ball_height//2 - small_ball_height//2,
+                        'to_x': -3,
+                        'to_y': -6,
+                        'img_idx': one_ball['img_idx']+1,
+                        'init_spd_y': ball_spd_y[one_ball['img_idx'] + 1]
+                    })
+
                 break
         if remove_weapon_idx > -1:
             del weapons[remove_weapon_idx]
