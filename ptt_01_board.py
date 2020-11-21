@@ -22,6 +22,5 @@ while running:
             running = False
 
 
-
 # 파이게임 종료
 pygame.quit()
