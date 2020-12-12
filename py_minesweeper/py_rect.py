@@ -30,5 +30,14 @@ while True:
     y_rect = pygame.Rect((30, 160), (100, 50))
     pygame.draw.rect(screen, (255, 255, 0), y_rect)
 
+    # 파란선: (100, 100), (200, 200)
+    pygame.draw.line(screen, (0, 0, 255), (100, 100), (200, 200))
+
+    # 빨간선: 세로 80픽셀에 가로 10~200 사이의 수평선 그리기
+    pygame.draw.line(screen, (255, 0, 0), (10, 80), (200, 80))
+
+    # 녹색선: 가로 250픽셀에 화면을 분할하는 수직선 그리기
+    pygame.draw.line(screen, (0, 255, 0), (250, 0), (250, 300))
+
     # 화면 업데이트
     pygame.display.update()
