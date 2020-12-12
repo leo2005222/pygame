@@ -39,5 +39,8 @@ while True:
     # 녹색선: 가로 250픽셀에 화면을 분할하는 수직선 그리기
     pygame.draw.line(screen, (0, 255, 0), (250, 0), (250, 300))
 
+    # 타원 그리기
+    pygame.draw.ellipse(screen, (255, 0, 0), y_rect)
+
     # 화면 업데이트
     pygame.display.update()
