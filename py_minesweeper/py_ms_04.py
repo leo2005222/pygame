@@ -83,9 +83,9 @@ while running:
 
     # 격자 그리기
     for x in range(COL_COUNT):
-        pygame.draw.line(screen, GRAY_LINE, (x, 0), (x, ROW_COUNT * CELL_SIZE))
+        pygame.draw.line(screen, GRAY_LINE, (x * CELL_SIZE, 0), (x * CELL_SIZE, ROW_COUNT * CELL_SIZE))
     for y in range(ROW_COUNT):
-        pygame.draw.line(screen, GRAY_LINE, (0, y), (COL_COUNT * CELL_SIZE, y))
+        pygame.draw.line(screen, GRAY_LINE, (0, y * CELL_SIZE), (COL_COUNT * CELL_SIZE, y * CELL_SIZE))
 
     # 화면 업데이트
     pygame.display.update()
